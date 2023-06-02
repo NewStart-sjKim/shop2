@@ -4,60 +4,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
 
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import logic.Board;
+import dao.mapper.ItemMapper;
 import logic.Item;
 
 @Repository //@Component + dao기능(데이터베이스 연결)
 public class ItemDao {
-	private NamedParameterJdbcTemplate template;
+	@Autowired
+	private SqlSessionTemplate template; //org.mybatis.spring.SqlSessionTemplate 객체 주입
 	private Map<String,Object> param = new HashMap<>();
-	//조회된 컬럼명과 Item 클래스의 프로퍼티가 같은 값을 Item 객체 생성
-	private RowMapper<Item> mapper = new BeanPropertyRowMapper<>(Item.class);
-	@Autowired //spring-db.xml에서 설정된 dataSource 객체 주입
-	public void setDataSource(DataSource dataSource) {
-		//dataSource : db에 연결된 객체.
-		//NamedParameterJdbcTemplate : spring 프레임워크의 jdbc 템플릿
-		template = new NamedParameterJdbcTemplate(dataSource);
-	}
+	private final Class<ItemMapper> cls = ItemMapper.class;
+	
 	public List<Item> list(){
-		return template.query("select * from item order by id", param,mapper);
+		param.clear();
+		return template.getMapper(cls).select(param); //item 테이블의 전체 내용을 Item 객체의 목록 리턴
 	}
 	public Item getItem(Integer id) {
 		param.clear();
 		param.put("id", id);
-		return template.queryForObject("select * from item where id=:id",param,mapper);
+		return template.getMapper(cls).select(param).get(0); //item 테이블의 id값의 해당하는 내용을 Item 객체의 목록 리턴. 한건만 필요
+		//return template.selectOne("dao.mapper.ItemMapper.select",param);
 	}
 	public int maxId() {
-		//Integer.class : select 결과 자료형
-		return template.queryForObject("select ifnull(max(id),0) from item",param,Integer.class);
+		return template.getMapper(cls).maxId();
 	}
 	public void insert(Item item) {
-		//:id...: item 객체의 프로퍼티로 설정
-		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
-		String sql = "insert into item (id, name,price, description, pictureUrl)"
-					 + " values (:id, :name, :price, :description, :pictureUrl)";
-		template.update(sql, param);
+		template.getMapper(cls).insert(item);
 	}
 	public void update(Item item) {
-		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
-		String sql = "update item set id=:id, name=:name, price=:price, description=:description, pictureUrl=:pictureUrl"
-				+ " where id=:id";
-		template.update(sql, param);
+		template.getMapper(cls).update(item);
 		
 	}
 	public void delete(Integer id) {
 		param.clear();
 		param.put("id", id);
-		template.update("delete from item where id=:id", param);
+		template.getMapper(cls).delete(param);
 	}
 }

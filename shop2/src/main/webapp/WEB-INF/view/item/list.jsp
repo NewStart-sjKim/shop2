@@ -25,10 +25,10 @@
 			<a href="detail?id=${item.id}">${item.name}</a>
 		</td>
 		<td align="right">${item.price}</td>
-		<td align="center">${item.price}
+		<td align="center">
 			<a href="update?id=${item.id}">수정</a>
 		</td>
-		<td align="right">${item.price}
+		<td align="right">
 			<a href="delete?id=${item.id}">삭제</a>
 		</td>
 	</tr>
