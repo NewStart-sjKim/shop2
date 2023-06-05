@@ -24,16 +24,18 @@ public class SaleDao {
 	private Map<String,Object> param = new HashMap<>();
 	private final Class<SaleMapper> cls = SaleMapper.class;
 	
-	public int getMaxSaleId() {
+	public int getMaxSaleId() { //saleid 최대값
 		return template.getMapper(cls).getMaxSaleId();
 	}
 	
 	public void insert(Sale sale) {//sale 테이블에 데이터 추가
-		template.getMapper(cls).insert(sale);
+		template.getMapper(SaleMapper.class).insert(sale);
+		//template.getMapper(cls).insert(sale);
 	}
 	public List<Sale> list(String userid) {
-		param.clear();
-		return template.getMapper(cls).select(param);
+		return template.getMapper(SaleMapper.class).list(userid);
+		//param.clear();
+		//return template.getMapper(cls).select(param);
 	}
 
 }

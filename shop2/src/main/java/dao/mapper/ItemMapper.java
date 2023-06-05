@@ -15,8 +15,8 @@ public interface ItemMapper {
 	
 	@Select({"<script>","select * from item <if test='id != null'> where id=#{id}</if> order by id",
 			 "</script>"})
-	List<Item> select(Map<String, Object> param);
-
+	List<Item> select(Map<String, Object> param); // anemspace : dao.mapper.ItemMapper
+												  // select : sql 문장의 이름
 	@Select("select ifnull(max(id), 0) from item")
 	int maxId();
 
@@ -30,8 +30,5 @@ public interface ItemMapper {
 
 	@Delete("delete from item where id=#{id}")
 	void delete(Map<String, Object> param);
-	
-	
-	
 	
 }
