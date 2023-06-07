@@ -57,5 +57,20 @@ public interface BoardMapper {
 	@Select("select writer, count(*) cnt from board where boardid=#{value}"
 			+ " group by writer order by 2 desc limit 0,7")
 	List<Map<String, Object>> graph1(String id);
+
+	/*
+	 * date_format(날짜,패턴) : 날짜혈식의 데이터를 패턴에 맞는 문자열로 리턴 sql 함수
+	 * 				day 컬럼 : YYYY-mm-dd 형식 문자열 컬럼
+	 * 
+	 *  [	컬럼명 : 컬럼값		   컬럼명:컬럼값
+	 *  	{day : 2023-06-07, cnt : 10}
+	 *  	{day : 2023-06-06, cnt : 3}
+	 *  	{day : 2023-06-05, cnt : 20}
+	 *  ]
+	 */
+	@Select("select date_format(regdate,'%Y-%m-%d') day, count(*) cnt from board "
+			+ " where boardid=${value} group by date_format(regdate,'%Y-%m-%d') "
+			+ " order by day desc limit 0,7")
+	List<Map<String, Object>> graph2(String id);
 	
 }
