@@ -35,4 +35,5 @@ public class User {
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date birthday;
 	
+	
 }

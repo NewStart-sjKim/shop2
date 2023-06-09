@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -32,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import exception.LoginException;
 import logic.Mail;
 import logic.ShopService;
+import logic.User;
 /*
  * AdminController의 모든 메서드들은 반드시 관리자로 로그인 해야만 실행 가능함.
  * AOP 설정 : AdminLoginAspect 클래스. adminCheck 메서드
@@ -39,18 +41,35 @@ import logic.ShopService;
  *    2. 관리자 로그인이 아닌 경우 : 관리자만 가능한 거래입니다. mypage 이동
  * 
  */
-import logic.User;
+import util.CipherUtil;
 
 @Controller
 @RequestMapping("admin")
 public class AdminController {
 	@Autowired
 	private ShopService service;
+	@Autowired
+	private CipherUtil cipher;
+	
+	private List<User> emailDecrypt(List<User> userlist) {
+		for(User u : userlist) {
+			try {
+				//userid SHA-256 알고리즘으로 해쉬값의 앞 16자리를 키로 설정 약속함
+				String key = cipher.makehash(u.getUserid(),"SHA-256");
+				String email = cipher.decrypt(u.getEmail(),key);
+				u.setEmail(email);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return userlist;
+	}
+	
 	@RequestMapping("list")
 	public ModelAndView userlist(String sort, HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		//list : db에 등록된 모든 회원정보 저장 목록
-		List<User> list = service.userlist(); //전체 회원목록
+		List<User> list = emailDecrypt(service.userlist()); //전체 회원목록
 		mav.addObject("list", list);
 		if(sort != null ) {
 			switch (sort){
@@ -92,7 +111,8 @@ public class AdminController {
 		if(idchks == null || idchks.length == 0) {
 			throw new LoginException("메일을 보낼 대상을 선택하세요","list");
 		}
-		List<User> list = service.getUserList(idchks);
+		//emailDecrypt() : 회원목록 데이터에서 이메일 부분만 복호화하여 리턴
+		List<User> list = emailDecrypt(service.getUserList(idchks));
 		mav.addObject("list",list);
 		return mav;
 	}
