@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import dao.BoardDao;
+import dao.CommentDao;
 import dao.ItemDao;
 import dao.SaleDao;
 import dao.SaleItemDao;
@@ -33,7 +34,8 @@ public class ShopService {
 	private SaleItemDao saleItemDao;
 	@Autowired
 	private BoardDao boardDao;
-	
+	@Autowired
+	private CommentDao commDao;
 	public List<Item> itemList(){
 		return itemDao.list();
 	}
@@ -141,7 +143,7 @@ public class ShopService {
 		userDao.delete(userid);
 	}
 
-	public void upDatePs(String password, String userid) {
+	public void upDatePs(String userid, String password) {
 		
 		userDao.chagpass(userid,password);
 	}
@@ -249,4 +251,33 @@ public class ShopService {
 		}
 	return map;//{2023-06-07:10,....}
 	}
+
+	public List<User> getUserlist(String phoneno) {
+		
+		return userDao.phoneList(phoneno);
+	}
+
+	public int commmaxseq(int num) {
+		return commDao.maxseq(num);
+	}
+
+	public void comminsert(Comment comm) {
+		commDao.insert(comm);
+	}
+
+	public List<Comment> commentlist(Integer num) {
+		return commDao.list(num);
+	}
+
+	public void commdel(int num, int seq) {
+		commDao.delete(num,seq);
+		
+	}
+
+	public Comment commSelectOne(int num, int seq) {
+		return commDao.selectOne(num, seq);
+	}
 }
+
+	
+

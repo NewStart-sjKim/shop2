@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import exception.BoardException;
 import exception.LoginException;
 import logic.Board;
+import logic.Comment;
 import logic.ShopService;
 
 @Controller
@@ -121,8 +122,8 @@ public class BoardController {
 	@RequestMapping("detail")
 	public ModelAndView detail(Integer num) {
 		ModelAndView mav = new ModelAndView(); // num 게시판 내용 조회
-		service.addReadcnt(num); //조회수 1 증가
 		Board board = service.getBoard(num);
+		service.addReadcnt(num); //조회수 1 증가
 		mav.addObject("board",board);
 		if(board.getBoardid() == null || board.getBoardid().equals("1"))
 			mav.addObject("boardName","공지사항");
@@ -130,6 +131,13 @@ public class BoardController {
 			mav.addObject("boardName","자유게시판");
 		else if(board.getBoardid().equals("3"))
 			mav.addObject("boardName","QNA");
+		//댓글 목록 화면에 전달
+		List<Comment> commlist = service.commentlist(num);
+		mav.addObject("commlist",commlist);
+		//유효성 검증에 필요한 Comment 객체
+		Comment comm = new Comment();
+		comm.setNum(num);
+		mav.addObject(comm);
 		return mav;
 	}
 	@GetMapping({"reply","update","delete"})
@@ -272,5 +280,30 @@ public class BoardController {
 				+ "/board/imgfile/" + upload.getOriginalFilename(); 
 		model.addAttribute("fileName",fileName);
 		return "ckedit"; //view 이름. /WEB-INF/view/ckedit.jsp
+	}
+	@RequestMapping("comment")
+	public ModelAndView comment(@Valid Comment comm, BindingResult bresult) {
+		ModelAndView mav = new ModelAndView("board/detail");
+		if(bresult.hasErrors()) {
+			mav.getModel().putAll(bresult.getModel());
+			return mav;
+		}
+		int seq = service.commmaxseq(comm.getNum());
+		comm.setSeq(++seq);
+		service.comminsert(comm);
+		return mav;
+	}
+	
+	@RequestMapping("commdel")
+	public String commdel(Comment comm) {
+		//현재 댓글을 아무나 삭제 가능 => 수정 필요
+		//업무요건1 : 로그인한 회원만 댓글 가능 => 내글만 삭제 가능
+		//업무요건2 : 로그아웃상테에서 댓글가능 => 비밀번호 추가. 비밀번호 검증 필요
+		Comment dbcomm = service.commSelectOne(comm.getNum(),comm.getSeq());
+		if(comm.getPass().equals(dbcomm.getPass()))
+			service.commdel(comm.getNum(),comm.getSeq());
+		else
+			throw new BoardException("댓글 삭제 실패","detail?num="+comm.getNum() + "#comment");
+		return "redirect:detail?num="+comm.getNum()+"#comment";
 	}
 }

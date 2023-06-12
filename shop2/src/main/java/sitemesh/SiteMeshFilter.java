@@ -15,7 +15,6 @@ import org.sitemesh.config.ConfigurableSiteMeshFilter;
 @WebFilter("/*")
 public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 	
-	
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {

@@ -279,7 +279,7 @@ public class UserController {
 	}
 	//{url}search :지정되지 않음.*search 인 요청시 호출되는 메서드
 	@PostMapping("{url}search")
-	public ModelAndView search(User user, BindingResult bresult, @PathVariable String url) {
+	public ModelAndView search(User user, BindingResult bresult, @PathVariable String url) throws NoSuchAlgorithmException {
 		//@PathVariable : {url}의 이름을 매개변수로 전달.
 		// 요청 : idsearch : url <= "id"
 		// 요청 : pwsearch : url <= "pw"
@@ -314,13 +314,46 @@ public class UserController {
 		 * user.getUserid() == null : 아이디찾기 => 아이디값 저장
 		 * user.getUserid() != null : 비밀번호찾기  => 비밀번호값 저장
 		 */
-		String result = service.getSearch(user); //mybatis 구현시 해당 레코드가 없는 경우 결과값이 null임
-												 //결과값이 없는 경우 예외발생 없음
-		if(result == null) {
+		String result = null; 
+		if(user.getUserid() == null) { //아이디 찾기
+			//전화번호를 기준으로 회원목록 조회 => 이메일로는 검증 안됨.
+			List<User> list = service.getUserlist(user.getPhoneno());
+			System.out.println(list);
+			for(User u : list) {
+				// u : 객체의 email 정보 : 암호화상태
+				// emailDecrypt(u) : 이메일 복호화
+				System.out.println("email:" + this.emailDecrypt(u));
+				u.setEmail(this.emailDecrypt(u)); //복호화된 이메일로 저장 => 입력된 이메일과 비교
+				//u.getEmail() : db에 저장된 이메일을 복호화한 데이트
+				//user.getEmail() : 입력된 이메일 데이터
+				if(u.getEmail().equals(user.getEmail())) { //검색 성공. 복호화된 이메일로 비교.
+					result = u.getUserid();
+				}
+			}
+		}else {//비밀번호 찾기(초기화)
+			user.setEmail(this.emailEncrypt(user.getEmail(),user.getUserid()));
+			result = service.getSearch(user);//mybatis 구현시 해당 레코드가 없는 경우 결과값이 null임
+											 //결과값이 없는 경우 예외발생 없음
+			if(result != null) { //비밀번호 검색 성공 => 초기화. db에 비밀번호를 변경. 
+				String pass=null;
+				try {
+					pass = util.makehash(user.getUserid(),"SHA-512");
+				} catch(NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+				//pass : 아이디의 SHA-512로 계산한 해쉬값
+				int index = (int)(Math.random()*(pass.length()-10));//비밀번호 해쉬값 일부분
+				result = pass.substring(index,index+6); //pass값의 임의의 위치에서 6자리값 랜덤 선택
+				//비밀번호 변경 => 비밀번호 초기화
+				service.upDatePs(user.getUserid(),passwordHash(result));
+			}
+		}
+		if(result == null) { //아이디 또는 비밀번호 검색 실패
 			bresult.reject(code);
 			mav.getModel().putAll(bresult.getModel());
-		return mav;
+			return mav;
 		}
+		System.out.println("result=" + result);
 		mav.addObject("result",result);
 		mav.addObject("title",title);
 		mav.setViewName("search");

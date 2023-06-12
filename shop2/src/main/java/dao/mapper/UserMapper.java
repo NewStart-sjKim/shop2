@@ -40,4 +40,7 @@ public interface UserMapper {
 			"<if test='userid != null' > and userid=#{userid}</if>",
 			"</script>"})
 	String search(Map<String, Object> param);
+
+	@Select("select * from usersecurity where phoneno = #{value}")
+	List<User> phoneList(String phoneno);
 }

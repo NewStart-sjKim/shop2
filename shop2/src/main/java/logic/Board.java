@@ -53,4 +53,5 @@ public class Board {
 	private int grpstep;
 	private int commcnt;
 	
+	
 	}

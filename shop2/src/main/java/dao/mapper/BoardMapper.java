@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import logic.Board;
+import logic.Comment;
 
 public interface BoardMapper {
 	String select = "select num,writer,pass,title,content,file1 fileurl,"
@@ -72,5 +73,6 @@ public interface BoardMapper {
 			+ " where boardid=${value} group by date_format(regdate,'%Y-%m-%d') "
 			+ " order by day desc limit 0,7")
 	List<Map<String, Object>> graph2(String id);
+
 	
 }
