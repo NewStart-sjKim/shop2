@@ -142,6 +142,7 @@ public class AjaxController {
 		String url = "https://www.koreaexim.go.kr/wg/HPHKWG057M01";
 		String exdate = null;
 		try {
+			service.exchangeinsert(trlist);
 			doc = Jsoup.connect(url).get();
 			Elements trs = doc.select("tr"); //tr 태그들
 			//p.table-unit : class속성의 값이 table-unit 인 p 태그

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import dao.BoardDao;
 import dao.CommentDao;
+import dao.ConuntSchedulerDao;
 import dao.ItemDao;
 import dao.SaleDao;
 import dao.SaleItemDao;
@@ -36,6 +37,9 @@ public class ShopService {
 	private BoardDao boardDao;
 	@Autowired
 	private CommentDao commDao;
+	@Autowired
+	private ConuntSchedulerDao conSchedulerDao;
+	
 	public List<Item> itemList(){
 		return itemDao.list();
 	}
@@ -276,6 +280,10 @@ public class ShopService {
 
 	public Comment commSelectOne(int num, int seq) {
 		return commDao.selectOne(num, seq);
+	}
+
+	public void exchangeinsert(List<List<String>> trlist) {
+		conSchedulerDao.insert(trlist);
 	}
 }
 

@@ -75,10 +75,10 @@ html, body, h1, h2, h3, h4, h5 {
 				<i class="fa fa-remove fa-fw"></i>&nbsp; Close Menu</a> 
 				<a href="${path}/user/mypage?userid=${loginUser.userid}"
 				class="w3-bar-item w3-button w3-padding 
-    <c:if test='${url == "user"}'>w3-blue</c:if>">
+   					 <c:if test='${url == "user"}'>w3-blue</c:if>">
 				<i class="fa fa-users fa-fw"></i>&nbsp; 회원관리</a> 
 			<a href="${path}/item/list"	class="w3-bar-item w3-button w3-padding 
-    <c:if test='${url == "item"}'>w3-blue</c:if>">
+    				 <c:if test='${url == "item"}'>w3-blue</c:if>">
 				<i class="fa fa-eye fa-fw"></i>&nbsp; 상품관리
 			</a> <a href="${path}/chat/chat"
 				class="w3-bar-item w3-button w3-padding 
@@ -99,14 +99,17 @@ html, body, h1, h2, h3, h4, h5 {
     <c:if test='${url == "board" && boardid=="3"}'>w3-blue</c:if>">
 				<i class="fa fa-eye fa-fw"></i>&nbsp; QnA
 			</a>
+			<hr>
+			<a href="${path }/naver/search" class="w3-bar-item w3-button w3-padding 
+			<c:if test='${url ==  "naver"}'>w3-blue</c:if>">
+				<i class="fa fa-eye fa-fw"></i>&nbsp;네이버 검색
+			</a>
 		</div>
 		<%-- 수출입은행 환율 정보 표시 영역 --%>
 		<div>
 			<div id="exchange" style="margin: 6px;"></div>
 		</div>
 	</nav>
-
-
 	<!-- Overlay effect when opening sidebar on small screens -->
 	<div class="w3-overlay w3-hide-large w3-animate-opacity"
 		onclick="w3_close()" style="cursor: pointer" title="close side menu"

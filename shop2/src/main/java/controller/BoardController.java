@@ -230,7 +230,7 @@ public class BoardController {
 	}
 	/*
 	 * 1. num,pass 파라미터 저장 => 매개변수 처리
-	 * 2. 비밀전호 검증 : db에서 num 게시글 조회. db에 등록된 비밀번호와 입력된 비밀번호 비교
+	 * 2. 비밀번호 검증 : db에서 num 게시글 조회. db에 등록된 비밀번호와 입력된 비밀번호 비교
 	 * 			비밀번호 오류 : error.board.password 코드값 설정 => delete.jsp로 전달
 	 * 3. 비밀번호 일치 : db에서 num 게시글 삭제.
 	 * 			삭제 성공 : list 페이지 이동
