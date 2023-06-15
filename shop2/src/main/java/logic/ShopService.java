@@ -38,7 +38,7 @@ public class ShopService {
 	@Autowired
 	private CommentDao commDao;
 	@Autowired
-	private ConuntSchedulerDao conSchedulerDao;
+	private ConuntSchedulerDao exDao;
 	
 	public List<Item> itemList(){
 		return itemDao.list();
@@ -282,9 +282,13 @@ public class ShopService {
 		return commDao.selectOne(num, seq);
 	}
 
-	public void exchangeinsert(List<List<String>> trlist) {
-		conSchedulerDao.insert(trlist);
+
+
+	public void exchangeInsert(Exchange ex) {
+		exDao.insert(ex);
 	}
+
+	
 }
 
 	

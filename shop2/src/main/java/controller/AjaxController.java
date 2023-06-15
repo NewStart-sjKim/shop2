@@ -142,7 +142,6 @@ public class AjaxController {
 		String url = "https://www.koreaexim.go.kr/wg/HPHKWG057M01";
 		String exdate = null;
 		try {
-			service.exchangeinsert(trlist);
 			doc = Jsoup.connect(url).get();
 			Elements trs = doc.select("tr"); //tr 태그들
 			//p.table-unit : class속성의 값이 table-unit 인 p 태그
@@ -207,6 +206,7 @@ public class AjaxController {
 		return trlist;
 	}
 	*/
+	
 	@RequestMapping("exchange2")
 	public Map<String,Object> exchange2() {
 		Document doc = null;
@@ -241,6 +241,7 @@ public class AjaxController {
 		map.put("trlist",trlist);//환율목록
 		return map;
 	}
+	
 	/*
 	 * List 객체 : 클라이언트로 배열객체로 전달
 	 * Map.Entry<String, Integer> : Json 형식으로 클라이언트로 전달 
@@ -256,6 +257,7 @@ public class AjaxController {
 		Collections.sort(list,(m1,m2)->m2.getValue() - m1.getValue()); //등록 건수의 내림차순 정렬
 		return list;
 	}
+	
 	@RequestMapping("graph2")
 	public List<Map.Entry<String,Integer>> graph2(String id){
 		Map<String,Integer> map = service.graph2(id); 

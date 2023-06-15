@@ -1,10 +1,12 @@
 package dao.mapper;
 
+import org.apache.ibatis.annotations.Insert;
+
+import logic.Exchange;
+
 public interface CountSchedulerMapper {
-	@Insert( "insert into exchange (eno,code,name,"
-			+ " primeamt,sellamt,butamt,edate) values"
-			+ " (#{eno},#{code},#{name},"
-			+ " #{primeamt},#{sellamt},#{butamt},#{edate})")
-	void insert(
-			)
+
+	@Insert("insert into exchange (code, name, primeamt,sellamt,buyamt,edate) "
+			+ " values (#{code}, #{name}, #{primeamt},#{sellamt},#{buyamt},#{edate})")
+	void insert(Exchange ex);
 }
