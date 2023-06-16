@@ -19,7 +19,7 @@
 			org.springframework.web.context.support.AnnotationConfigWebApplicationContext
 		</param-value>
 	</init-param>
-	<init-param><!-- 자바환경셜정파일의 클래스 이름 지정 -->
+	<init-param><!-- 자바환경설정파일의 클래스 이름 지정 -->
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			config.MvcConfig
